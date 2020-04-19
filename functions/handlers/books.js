@@ -24,7 +24,7 @@ exports.getAllBooks = (req, res) => {
     .catch((err) => console.error(err));
 };
 
-// Fetch one scream
+// Fetch one book
 exports.getBook = (req, res) => {
   let bookData = {};
   db.doc(`/books/${req.params.bookId}`)
