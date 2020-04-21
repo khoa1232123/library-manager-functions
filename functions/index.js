@@ -22,6 +22,10 @@ const {
 
 const {
   getAllBorrowBooks,
+  getBorrowBook,
+  createBorrowBook,
+  updateBorrowBook,
+  deleteBorrowBook
 } = require("./handlers/borrowBooks");
 
 // Books
@@ -40,5 +44,9 @@ app.delete("/borrowers/:borrowerId", deleteBorrower);
 
 // Borrow Books
 app.get("/borrowBooks", getAllBorrowBooks);
+app.get("/borrowBooks/:borrowBookId", getBorrowBook);
+app.post("/borrowBooks", createBorrowBook);
+app.post("/borrowBooks/:borrowBookId", updateBorrowBook);
+app.delete("/borrowBooks/:borrowBookId", deleteBorrowBook);
 
 exports.api = functions.region("us-central1").https.onRequest(app);

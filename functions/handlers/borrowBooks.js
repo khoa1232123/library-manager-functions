@@ -5,12 +5,11 @@ exports.getAllBorrowBooks = (req, res) => {
     .get()
     .then((data) => {
       let borrowBooks = [];
-      console.log(getBorrowerById("kIXYDVXVFLySrH2wzKox"));
       data.forEach((doc) => {
         borrowBooks.push({
           borrowBookId: doc.id,
-          borrower: getBorrowerById(doc.data().borrowerId),
-          book: getBookById(doc.data().bookId),
+          borrowerId: doc.data().borrowerId,
+          bookId: doc.data().bookId,
           amount: doc.data().amount,
           returned: doc.data().returned,
           overdue: doc.data().overdue,
@@ -23,37 +22,100 @@ exports.getAllBorrowBooks = (req, res) => {
     .catch((err) => console.error(err));
 };
 
-function getBorrowerById(id) {
-  let borrowerData = {};
-  console.log('borrower');
-  db.doc(`/borrowers/${id}`)
+// Fetch one book
+exports.getBorrowBook = (req, res) => {
+  let borrowBookData = {};
+  db.doc(`/borrowBooks/${req.params.borrowBookId}`)
     .get()
     .then(doc => {
       if (!doc.exists) {
-        console.log("error")
+        return res.status(404).json({ error: "Book not found" });
       }
-      borrowerData = doc.data();
-      borrowerData.borrowerId = doc.id;
-      return borrowerData;
+      borrowBookData = doc.data();
+      borrowBookData.borrowBookId = doc.id;
+      return res.json(borrowBookData);
     })
     .catch(err => {
       console.error(err);
+      res.status(500).json({ error: err.code });
     });
-}
+};
 
-function getBookById(id) {
-  let bookData = {};
-  db.doc(`/books/${id}`)
+exports.createBorrowBook = (req, res) => {
+  const newBorrowBook = {
+    borrowerId: req.body.borrowerId,
+    bookId: req.body.bookId,
+    amount: req.body.amount,
+    returned: req.body.returned,
+    overdue: req.body.overdue,
+    amount: req.body.amount,
+    returnDay: req.body.returnDay,
+    createdAt: new Date().toISOString(),
+  };
+  db.collection("borrowBooks")
+    .add(newBorrowBook)
+    .then(doc => {
+      const resBorrowBook = newBorrowBook;
+      resBorrowBook.BorrowBookId = doc.id;
+      res.json({ resBorrowBook });
+    })
+    .catch(err => {
+      res.status(500).json({ error: `Something went wrong!` });
+      console.error(err);
+    });
+};
+
+// update a borrower
+exports.updateBorrowBook = (req, res) => {
+  const newBorrowBook = {
+    borrowerId: req.body.borrowerId,
+    bookId: req.body.bookId,
+    amount: req.body.amount,
+    returned: req.body.returned,
+    overdue: req.body.overdue,
+    amount: req.body.amount,
+    returnDay: req.body.returnDay,
+    createdAt: new Date().toISOString(),
+  };
+
+  let borrowBookDoc = db.doc(`/borrowBooks/${req.params.borrowBookId}`);
+
+  borrowBookDoc
+    .get()
+    .then(doc => {
+      console.log(req.params.borrowBookId);
+      if (!doc.exists) {
+        return res.status(404).json({ error: "BorrowBook not found" });
+      }
+      return doc.ref.update(newBorrowBook);
+    })
+    .then(() => {
+      res.json(newBorrowBook);
+    })
+    .catch(err => {
+      res.status(500).json({ error: "Update fail" });
+      console.error(err);
+    });
+};
+
+
+//delete a Borrower
+exports.deleteBorrowBook = (req, res) => {
+  const document = db.doc(`/borrowers/${req.params.borrowBookId}`);
+  document
     .get()
     .then(doc => {
       if (!doc.exists) {
-        console.log("error")
+        return res.status(404).json({ error: "BorrowBook not found" });
+      } else {
+        return document.delete();
       }
-      bookData = doc.data();
-      bookData.bookId = doc.id;
-      return bookData;
+    })
+    .then(() => {
+      res.json({ message: "Borrower deleted" });
     })
     .catch(err => {
       console.error(err);
+      return res.status(500).json({ error: err.code });
     });
-}
+};
