@@ -9,6 +9,7 @@ exports.getAllBooks = (req, res) => {
         books.push({
           bookId: doc.id,
           name: doc.data().name,
+          image: doc.data().image,
           categories: doc.data().categories,
           description: doc.data().description,
           newPer: doc.data().newPer,
@@ -16,6 +17,7 @@ exports.getAllBooks = (req, res) => {
           release: doc.data().release,
           amount: doc.data().amount,
           area: doc.data().area,
+          status: doc.data().status,
           createdAt: doc.data().createdAt,
         });
       });
@@ -47,6 +49,7 @@ exports.createBook = (req, res) => {
   
   const newBook = {
     name: req.body.name,
+    image: req.body.image,
     categories: req.body.categories,
     description: req.body.description,
     newPer: req.body.newPer,
@@ -54,6 +57,7 @@ exports.createBook = (req, res) => {
     release: req.body.release,
     amount: req.body.amount,
     area: req.body.area,
+    status: req.body.status,
     createdAt: new Date().toISOString(),
   };
   db.collection("books")
@@ -72,13 +76,15 @@ exports.createBook = (req, res) => {
 exports.updateBook = (req, res) => {
   const newBook = {
     name: req.body.name,
+    image: req.body.image,
     categories: req.body.categories,
     description: req.body.description,
     newPer: req.body.newPer,
     author: req.body.author,
     release: req.body.release,
     amount: req.body.amount,
-    area: req.body.area
+    area: req.body.area,
+    status: req.body.status
   };
 
   let bookDoc = db.doc(`/books/${req.params.bookId}`);

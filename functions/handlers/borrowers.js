@@ -10,7 +10,8 @@ exports.getAllBorrowers = (req, res) => {
         borrowers.push({
           borrowerId: doc.id,
           name: doc.data().name,
-          class: doc.data().class,
+          image: doc.data().image,
+          classRoom: doc.data().classRoom,
           position: doc.data().position,
           createdAt: doc.data().createdAt,
         });
@@ -45,7 +46,7 @@ exports.getBorrower = (req, res) => {
 exports.createBorrower = (req, res) => {
   const newBorrower = {
     name: req.body.name,
-    class: req.body.class,
+    classRoom: req.body.classRoom,
     position: req.body.position,
     createdAt: new Date().toISOString(),
   };
@@ -67,7 +68,8 @@ exports.createBorrower = (req, res) => {
 exports.updateBorrower = (req, res) => {
   const newBorrower = {
     name: req.body.name,
-    class: req.body.class,
+    image: req.body.image,
+    classRoom: req.body.classRoom,
     position: req.body.position,
     createdAt: new Date().toISOString(),
   };
