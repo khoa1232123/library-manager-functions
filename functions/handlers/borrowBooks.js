@@ -6,10 +6,13 @@ exports.getAllBorrowBooks = (req, res) => {
     .then((data) => {
       let borrowBooks = [];
       data.forEach((doc) => {
+        console.log("abc");
+        console.log(doc.data());
+        console.log("abc");
         borrowBooks.push({
           borrowBookId: doc.id,
-          borrowerId: doc.data().borrowerId,
-          bookId: doc.data().bookId,
+          borrower: doc.data().borrower,
+          book: doc.data().book,
           amount: doc.data().amount,
           returned: doc.data().returned,
           overdue: doc.data().overdue,
@@ -17,6 +20,7 @@ exports.getAllBorrowBooks = (req, res) => {
           returnDay: doc.data().returnDay,
         });
       });
+      
       return res.json(borrowBooks);
     })
     .catch((err) => console.error(err));
@@ -43,8 +47,8 @@ exports.getBorrowBook = (req, res) => {
 
 exports.createBorrowBook = (req, res) => {
   const newBorrowBook = {
-    borrowerId: req.body.borrowerId,
-    bookId: req.body.bookId,
+    borrower: req.body.borrower,
+    book: req.body.book,
     amount: req.body.amount,
     returned: req.body.returned,
     overdue: req.body.overdue,
@@ -56,7 +60,7 @@ exports.createBorrowBook = (req, res) => {
     .add(newBorrowBook)
     .then(doc => {
       const resBorrowBook = newBorrowBook;
-      resBorrowBook.BorrowBookId = doc.id;
+      resBorrowBook.borrowBookId = doc.id;
       res.json({ resBorrowBook });
     })
     .catch(err => {
@@ -68,8 +72,8 @@ exports.createBorrowBook = (req, res) => {
 // update a borrower
 exports.updateBorrowBook = (req, res) => {
   const newBorrowBook = {
-    borrowerId: req.body.borrowerId,
-    bookId: req.body.bookId,
+    borrower: req.body.borrower,
+    book: req.body.book,
     amount: req.body.amount,
     returned: req.body.returned,
     overdue: req.body.overdue,
@@ -101,7 +105,7 @@ exports.updateBorrowBook = (req, res) => {
 
 //delete a Borrower
 exports.deleteBorrowBook = (req, res) => {
-  const document = db.doc(`/borrowers/${req.params.borrowBookId}`);
+  const document = db.doc(`/borrowBooks/${req.params.borrowBookId}`);
   document
     .get()
     .then(doc => {

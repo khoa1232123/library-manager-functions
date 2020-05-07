@@ -74,9 +74,9 @@ exports.createBook = (req, res) => {
 };
 
 exports.updateBook = (req, res) => {
+
   const newBook = {
     name: req.body.name,
-    image: req.body.image,
     categories: req.body.categories,
     description: req.body.description,
     newPer: req.body.newPer,
@@ -84,7 +84,8 @@ exports.updateBook = (req, res) => {
     release: req.body.release,
     amount: req.body.amount,
     area: req.body.area,
-    status: req.body.status
+    status: req.body.status,
+    image: req.body.image,
   };
 
   let bookDoc = db.doc(`/books/${req.params.bookId}`);

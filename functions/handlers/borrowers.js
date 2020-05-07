@@ -46,6 +46,7 @@ exports.getBorrower = (req, res) => {
 exports.createBorrower = (req, res) => {
   const newBorrower = {
     name: req.body.name,
+    image: req.body.image,
     classRoom: req.body.classRoom,
     position: req.body.position,
     createdAt: new Date().toISOString(),
